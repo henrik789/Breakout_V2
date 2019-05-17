@@ -14,11 +14,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     var dt: TimeInterval = 0
     var lastUpdateTime: TimeInterval = 0
     var velocity = CGPoint.zero
+    var xOffset: CGFloat = 0
     var motionManager: CMMotionManager!
     var destX : CGFloat = 0.0
     var destY : CGFloat = 0.0
     let robot = SKSpriteNode(imageNamed: "Run (1)")
-    let robotMovePointPerSec: CGFloat = 100
+    let robotMovePointPerSec: CGFloat = 70
     var phoneSize = GameViewController.screensize
     var red1 = 54.0
     var green1 = 78.0
@@ -98,8 +99,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         }
         
         
-        
-        robot.position = CGPoint(x: size.width - (size.width * 0.85), y: size.height - (size.height * 0.05) )
+        robot.position = CGPoint(x: xOffset, y: size.height - (size.height * 0.05) )
         robot.size = CGSize(width: 50, height: 50)
         
         var textures: [SKTexture] = []
@@ -109,13 +109,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         let robotRun: SKAction
         robotRun = SKAction.animate(with: textures, timePerFrame: 0.1)
         robot.run(SKAction.repeatForever(robotRun))
+        
         addChild(robot)
         
     }
     
-    func moveSprite(_ sprite: SKSpriteNode, velocity: CGPoint){
-        let amountToMove = CGPoint(x: velocity.x * CGFloat(dt), y: velocity.y * CGFloat(dt))
-        sprite.position = CGPoint(x: sprite.position.x + amountToMove.x, y: sprite.position.y + amountToMove.y)
+    func moveSprite(_ sprite: SKSpriteNode, velocity: CGPoint) {
+        let amountToMove: CGPoint
+        
+        if sprite.position.x < frame.width - xOffset {
+            robot.xScale = 1
+            amountToMove = CGPoint(x: velocity.x * CGFloat(dt), y: velocity.y * CGFloat(dt))
+            sprite.position = CGPoint(x: sprite.position.x + amountToMove.x, y: sprite.position.y + amountToMove.y)
+        }else if sprite.position.x > xOffset {
+            robot.xScale = -1
+            amountToMove = CGPoint(x: velocity.x * -CGFloat(dt), y: velocity.y * CGFloat(dt))
+            sprite.position = CGPoint(x: sprite.position.x + amountToMove.x, y: sprite.position.y + amountToMove.y)
+        }
     }
     
     func launchBall(){
@@ -154,7 +164,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             
             let blockWidth = SKSpriteNode(imageNamed: "yellowBlock.png").size.width
             let blockHeight = SKSpriteNode(imageNamed: "yellowBlock.png").size.height
-            let xOffset = (frame.width - (blockWidth * 8)) / 2
+            xOffset = (frame.width - (blockWidth * 8)) / 2
             let yOffset = frame.height * 0.95
             var index = 1
             var block = SKSpriteNode(imageNamed: "yellowBlock.png")
@@ -501,7 +511,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             dt = 0
         }
         lastUpdateTime = currentTime
-        print("\(dt * 1000) millisecnds")
+        print("\(dt * 1000) millisecnds", xOffset, frame.width)
         
         moveSprite(robot, velocity: CGPoint(x: robotMovePointPerSec , y: 0))
         

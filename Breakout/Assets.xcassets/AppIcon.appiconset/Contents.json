@@ -100,15 +100,13 @@
       "scale" : "2x"
     },
     {
-      "size" : "1024x1024",
       "idiom" : "ios-marketing",
-      "filename" : "iTunesArtwork@2x-1.png",
+      "size" : "1024x1024",
       "scale" : "1x"
     },
     {
-      "size" : "512x512",
       "idiom" : "mac",
-      "filename" : "ItunesArtwork@2x.png",
+      "size" : "512x512",
       "scale" : "2x"
     }
   ],

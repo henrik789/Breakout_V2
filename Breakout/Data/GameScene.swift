@@ -99,7 +99,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         }
         
         
-        robot.position = CGPoint(x: xOffset, y: size.height - (size.height * 0.05) )
+        robot.position = CGPoint(x: xOffset + 55, y: size.height - (size.height * 0.05) )
         robot.size = CGSize(width: 50, height: 50)
         
         var textures: [SKTexture] = []
@@ -116,16 +116,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     func moveSprite(_ sprite: SKSpriteNode, velocity: CGPoint) {
         let amountToMove: CGPoint
+        var direction: CGFloat = 1
+        let topRange = SKRange(lowerLimit: CGFloat(xOffset),
+        upperLimit: CGFloat(xOffset + 5))
+        let endRange = SKRange(lowerLimit: CGFloat(frame.width - xOffset),
+                               upperLimit: CGFloat(frame.width - xOffset - 10))
         
-        if sprite.position.x < frame.width - xOffset {
-            robot.xScale = 1
-            amountToMove = CGPoint(x: velocity.x * CGFloat(dt), y: velocity.y * CGFloat(dt))
-            sprite.position = CGPoint(x: sprite.position.x + amountToMove.x, y: sprite.position.y + amountToMove.y)
-        }else if sprite.position.x > xOffset {
-            robot.xScale = -1
-            amountToMove = CGPoint(x: velocity.x * -CGFloat(dt), y: velocity.y * CGFloat(dt))
-            sprite.position = CGPoint(x: sprite.position.x + amountToMove.x, y: sprite.position.y + amountToMove.y)
+        if sprite.position.x == contains.topRange || sprite.position.x == contains.endRange {
+            direction *= -1
+            robot.xScale = direction
         }
+        print(frame.width - xOffset ,sprite.position.x)
+            amountToMove = CGPoint(x: velocity.x * direction * CGFloat(dt), y: velocity.y * CGFloat(dt))
+            sprite.position = CGPoint(x: sprite.position.x + amountToMove.x, y: sprite.position.y + amountToMove.y)
+        
     }
     
     func launchBall(){
@@ -511,7 +515,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             dt = 0
         }
         lastUpdateTime = currentTime
-        print("\(dt * 1000) millisecnds", xOffset, frame.width)
+//        print("\(dt * 1000) millisecnds", xOffset, frame.width)
         
         moveSprite(robot, velocity: CGPoint(x: robotMovePointPerSec , y: 0))
         
